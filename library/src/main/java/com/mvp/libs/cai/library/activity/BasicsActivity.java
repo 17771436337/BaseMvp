@@ -22,10 +22,7 @@ import com.mvp.libs.cai.library.prsenter.ReflectionPresenterFactory;
  * @time 2018/5/26
  */
 public abstract class BasicsActivity<P extends Presenter> extends Activity implements ViewWithPresenter<P> ,BaseContract.BaseViewIml{
-    protected Context context;
     protected PresenterDelegate<P> presenterDelegate = null;
-    protected View rootView;
-
     //-------------------------------------------------------------------周期相关代码----------------------------------------------------------------
 
     @Override
