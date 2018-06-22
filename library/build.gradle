@@ -1,12 +1,10 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.17771436337'
 android {
     compileSdkVersion 27
-
-
-
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 9
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -21,10 +19,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     testImplementation 'junit:junit:4.12'
 }
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
