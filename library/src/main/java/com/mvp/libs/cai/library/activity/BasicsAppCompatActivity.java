@@ -3,6 +3,9 @@ package com.mvp.libs.cai.library.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.mvp.libs.cai.library.Constant;
+import com.mvp.libs.cai.library.listener.BaseContract;
 import com.mvp.libs.cai.library.listener.PresenterFactory;
 import com.mvp.libs.cai.library.listener.ViewWithPresenter;
 import com.mvp.libs.cai.library.prsenter.Presenter;
@@ -16,7 +19,7 @@ import com.mvp.libs.cai.library.prsenter.ReflectionPresenterFactory;
  * @e-mail 1020233514@qq.com
  * @time 2018/5/26
  */
-public abstract class BasicsAppCompatActivity<P extends Presenter> extends AppCompatActivity implements ViewWithPresenter<P> {
+public abstract class BasicsAppCompatActivity<P extends Presenter> extends AppCompatActivity implements ViewWithPresenter<P> ,BaseContract.BaseViewIml{
     protected PresenterDelegate<P> presenterDelegate = null;
     //-------------------------------------------------------------------周期相关代码----------------------------------------------------------------
 
@@ -24,14 +27,23 @@ public abstract class BasicsAppCompatActivity<P extends Presenter> extends AppCo
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenterDelegate = new PresenterDelegate<>(ReflectionPresenterFactory.<P>fromViewClass(getClass()));
+        if (savedInstanceState != null) {
+            presenterDelegate.onRestoreInstanceState(savedInstanceState.getBundle(Constant.PRESENTER_KEY));
+        }
         presenterDelegate.onCreate(this);
     }
 
 
     @Override
     protected void onDestroy() {
+        presenterDelegate.onDestroy();
         super.onDestroy();
 
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle(Constant.PRESENTER_KEY, presenterDelegate.onSaveInstanceState());
     }
 
 
@@ -61,5 +73,20 @@ public abstract class BasicsAppCompatActivity<P extends Presenter> extends AppCo
         }else{
             return null;
         }
+    }
+
+    @Override
+    public void showError(String msg, boolean isLoadMore) {
+
+    }
+
+    @Override
+    public void complete() {
+
+    }
+
+    @Override
+    public void showProgressUI(boolean isShow) {
+
     }
 }

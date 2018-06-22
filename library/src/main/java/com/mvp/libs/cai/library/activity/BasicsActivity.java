@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.mvp.libs.cai.library.Constant;
+import com.mvp.libs.cai.library.listener.BaseContract;
 import com.mvp.libs.cai.library.listener.PresenterFactory;
 import com.mvp.libs.cai.library.listener.ViewWithPresenter;
 import com.mvp.libs.cai.library.prsenter.Presenter;
@@ -19,7 +21,7 @@ import com.mvp.libs.cai.library.prsenter.ReflectionPresenterFactory;
  * @e-mail 1020233514@qq.com
  * @time 2018/5/26
  */
-public abstract class BasicsActivity<P extends Presenter> extends Activity implements ViewWithPresenter<P> {
+public abstract class BasicsActivity<P extends Presenter> extends Activity implements ViewWithPresenter<P> ,BaseContract.BaseViewIml{
     protected Context context;
     protected PresenterDelegate<P> presenterDelegate = null;
     protected View rootView;
@@ -30,16 +32,24 @@ public abstract class BasicsActivity<P extends Presenter> extends Activity imple
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenterDelegate = new PresenterDelegate<>(ReflectionPresenterFactory.<P>fromViewClass(getClass()));
+        if (savedInstanceState != null) {
+            presenterDelegate.onRestoreInstanceState(savedInstanceState.getBundle(Constant.PRESENTER_KEY));
+        }
         presenterDelegate.onCreate(this);
     }
 
 
     @Override
     protected void onDestroy() {
+        presenterDelegate.onDestroy();
         super.onDestroy();
 
     }
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle(Constant.PRESENTER_KEY, presenterDelegate.onSaveInstanceState());
+    }
 
     //-------------------------------------------------------------------自实现相关逻辑代码----------------------------------------------------------------
 
@@ -67,5 +77,20 @@ public abstract class BasicsActivity<P extends Presenter> extends Activity imple
         }else{
             return null;
         }
+    }
+
+    @Override
+    public void showError(String msg, boolean isLoadMore) {
+
+    }
+
+    @Override
+    public void complete() {
+
+    }
+
+    @Override
+    public void showProgressUI(boolean isShow) {
+
     }
 }
